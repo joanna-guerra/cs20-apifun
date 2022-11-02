@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+<head>
+	<title>API Fun</title>
+	<meta charset="utf-8"/>
+	<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+	<script>
+		// Purpose: consolidate the elements of my HTTP request
+		function getcurrency() {
+			if ($("#select-currency").val()){
+				fetch("https://open.er-api.com/v6/latest/USD")
+								.then(response => response.json())
+								.then(json => callfunctions(json))
+								.catch(error => console.log(error));
+	
+        	}
+		}
+		
+		// Purpose: store the selected currency value in a variable and call out the exchange rate for it from the API file
+		function callfunctions(country_currency) {
+
+			var srate = $("#select-currency").val();
+			document.getElementById("mydata").innerHTML = ("1 USD = " + country_currency["rates"][srate] + " " + srate);
+
+        }
+
+		// Purpose: request data from the API address, call the function that checks the status and state, open the API and send the request
+		function requestData() {
+
+            var request = new XMLHttpRequest();
+            if (! request) 
+                {alert("Unable to create HTTPRequest object"); return;}
+			request.onreadystatechange = GetMyData();
+			request.open("GET", "https://open.er-api.com/v6/latest/USD", true);
+			request.send();
+
+		}
+
+		// Purpose: check the status and state of the request and return the data object from the API
+		function GetMyData() {
+			if (this.readyState == 4 && this.status == 200) {
+					var result = request.responseText;
+					var objexrate = JSON.parse(result);
+					returnHTML = objexrate["rates"];
+					
+			}
+		}
+
+		// Purpose: call the function to be executed
+		requestData();
+
+	</script>
+
+	<h1>API Fun</h1>
+	<div id="api-quiz">
+		<h2> Dollar exchange rate today </h2>
+		<form id="currency">
+			<p>Select currency:
+				<select id="select-currency">
+					<option value="none" selected disabled hidden>
+											Select a Type</option>
+					<option value="EUR">Euro</option>
+					<option value="GBP">Pound</option>
+					<option value="BRL">Brazilian Real</option>
+					<option value="CNY">Chinese Yuan</option>
+				</select>
+				<input type="button" id="exbtn" value="See the rate!" onclick="getcurrency()">
+			</p>
+		</form>
+		<div id="mydata"></div>
+	</div>
+	<div id="answerquestions">
+		<p><strong>Name: </strong>Exchange-Rate-API</p>
+		<p><strong>Description: </strong> this API returns the updated Dollar exchange rate to other currencies </p>
+		<p><strong>Website source: </strong>https://mixedanalytics.com/blog/list-actually-free-open-no-auth-needed-apis/</p>
+		<p><strong>Options: </strong> I chose only to get the exchange rates for the Dollar, but it would be possible to allow the user to choose both currencies for the exchange rate. So, in the way my code was written, there are no options.</p>
+		<p><strong>Two applications:</strong> </p>
+		<ul>
+			<li> On a bank website so that its customers know what are the updated exchange rate from a trusted source. </li>
+			<li> On the Tufts Economic Department website so students could easily get up to date with the money exchange market.</li>
+		</ul>
+	</div>
+</body>
+</html>
